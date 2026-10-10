@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory List</title>
+
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      color: black;
+      padding: 20px;
+    }
+
+    th {
+  background: #222;
+  color: #ffffff;
+  font-weight: bold;
+}
+    h2 {
+      text-align: center;
+      font-weight: normal;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      height: 30px;
+      text-align: center
+
+    }
+
+    input, select {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: white;
+      color: black;
+      font: inherit;
+    }
+
+    button {
+      background: white;
+      color: black;
+      border: 1px solid black;
+      padding: 7px 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .toolbar {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+  .toolbar input {
+    flex: 0 0 240px;
+}
+.toolbar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#totalProducts {
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+  padding: 10px;
+}
+
+/* Page background */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+  padding: 25px;
+}
+
+/* Main title */
+h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+/* Table design */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Table headings */
+th {
+  background: rgba(39, 61, 129, 0.963);
+  color: rgba(255, 255, 255, 0.534);
+  padding: 12px;
+  text-align: center;
+}
+
+/* Table cells */
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  height: 30px;
+  text-align: center;
+}
+
+/* Alternating row colors */
+tbody tr:nth-child(even) {
+  background: rgb(238, 242, 243);
+}
+
+/* Highlight a row when hovering */
+tbody tr:hover {
+  background: #ededed;
+}
+
+/* Inputs and dropdowns */
+input, select {
+  text-align: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* Buttons */
+button {
+  background: rgba(39, 61, 129, 0.963); ;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #555;
+}
+
+/* Search bar */
+.toolbar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.toolbar input {
+  max-width: 350px;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+}
+
+/* Total products */
+#totalProducts {
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 18px;
+  padding: 14px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+
+
+  </style>
+</head>
+
+<body>
+  <h2>Inventory List</h2>
+   <section class="toolbar">
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Search product name"
+
+        </section>
+
+  <button onclick="addRow()">Add Row</button>
+
+  <table id="inventoryTable">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody id="rows"></tbody>
+  </table>
+  
+<p id="totalProducts">Total Products: 0</p>
+
+
+  <script>
+    
+    function addRow() {
+      const row = document
+        .getElementById("rows")
+        .insertRow();
+
+      // Product
+      let cell = row.insertCell();
+      let product = document.createElement("input");
+      product.type = "text";
+      cell.appendChild(product);
+
+      // Quantity
+      cell = row.insertCell();
+      let quantity = document.createElement("input");
+      quantity.type = "number";
+      quantity.min = "0";
+      cell.appendChild(quantity);
+
+      // Price
+      cell = row.insertCell();
+      let price = document.createElement("input");
+      price.type = "number";
+      price.min = "0";
+      price.step = "0.01";
+      cell.appendChild(price);
+
+      // Status dropdown
+      cell = row.insertCell();
+      let status = document.createElement("select");
+
+      const options = [
+        "",
+        "Good",
+        "Damaged",
+        "Expired",
+        "Others"
+      ];
+
+      options.forEach(option => {
+        const item = document.createElement("option");
+        item.value = option;
+        item.textContent = option || "Select status";
+        status.appendChild(item);
+      });
+
+      cell.appendChild(status);
+    }
+
+    // Create 15 empty rows initially
+    for (let i = 0; i < 15; i++) {
+      addRow();
+    }
+
+    // Count rows that have a product name
+    function updateTotalProducts() {
+      const rows = document.querySelectorAll("#rows tr");
+      let total = 0;
+
+      rows.forEach(row => {
+        const productInput = row.cells[0].querySelector("input");
+
+        if (productInput.value.trim() !== "") {
+          total++;
+        }
+      });
+
+      document.getElementById("totalProducts").textContent =
+        "Total Products: " + total;
+    }
+
+    // Update the count whenever a product name changes
+    document.getElementById("rows").addEventListener("input", function(event) {
+      if (event.target.type === "text") {
+        updateTotalProducts();
+      }
+    });
+
+    // Update the count when adding rows
+    const addButton = document.querySelector("button");
+    addButton.addEventListener("click", updateTotalProducts);
+
+    updateTotalProducts();
+  </script>
+</body>
+</html>
